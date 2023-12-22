@@ -18,10 +18,11 @@ body {
 
 .container {
     max-width: 1000px;
+    /* border: 1px solid red; */
+    margin: 10px;
 }
 
 nav {
-    margin: 10px;
     padding: 15px;
     color: white;
     /* width: 100%; */
@@ -58,7 +59,7 @@ input {
 }
 
 input::placeholder {
-    color:rgb(255, 255, 255);
+    color: rgb(255, 255, 255);
 }
 
 .nav__center {
@@ -69,4 +70,69 @@ input::placeholder {
 
 .nav__right {
     /* border: 1px solid red; */
+}
+
+/* -------- Box --------- */
+
+.box-container {
+    display: flex;
+    gap: 10px;
+}
+
+.box {
+    width: 50%;
+    height: 500px;
+    border-radius: 6px;
+    /* border: 1px solid rgb(195, 182, 182); */
+    background-color: rgb(40, 40, 40);
+
+    overflow: hidden;
+}
+
+/* -------------------- Movie List ----------- */
+
+.movie-list {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 30px;
+
+    /* border: 1px solid red; */
+}
+
+.loading,
+.error {
+    color: white;
+    font-size: 1.3rem;
+    margin-top: 30px;
+
+    text-align: center;
+}
+
+.movie {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    color: white;
+    /* border: 1px solid red; */
+
+    border-bottom: 0.5px solid rgb(93, 93, 93);
+    padding: 15px 0px;
+}
+
+.movie-list .title {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.movie__image {
+    width: 40px;
+    height: 60px;
+    background-color: rgb(25, 25, 25);
+}
+
+.movie__detail {
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
 }
