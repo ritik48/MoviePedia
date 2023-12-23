@@ -19,7 +19,7 @@ body {
 .container {
     max-width: 1000px;
     /* border: 1px solid red; */
-    margin: 10px;
+    margin: 10px auto;
 }
 
 nav {
@@ -27,18 +27,19 @@ nav {
     color: white;
     /* width: 100%; */
     /* border: 1px solid red; */
-
     justify-content: space-around;
     align-items: center;
 
     gap: 20px;
+
+    font-size: 1rem;
 
     border-radius: 8px;
     background-color: rgb(81, 96, 165);
 }
 
 .brand {
-    font-size: 1.5rem;
+    font-size: 1.2em;
     font-weight: bold;
     /* border: 1px solid red; */
 }
@@ -48,7 +49,7 @@ input {
     /* border: 1px solid red; */
     outline: none;
 
-    font-size: 1.2rem;
+    font-size: 1.2em;
     padding: 0.45em 0.6em;
     border-radius: 5px;
     /* border: 1px solid red; */
@@ -69,7 +70,7 @@ input::placeholder {
 }
 
 .nav__right {
-    /* border: 1px solid red; */
+    font-size: 1em;
 }
 
 /* -------- Box --------- */
@@ -85,8 +86,18 @@ input::placeholder {
     border-radius: 6px;
     /* border: 1px solid rgb(195, 182, 182); */
     background-color: rgb(40, 40, 40);
+    overflow: scroll;
 
-    overflow: hidden;
+}
+
+/* -------------- Hide scrollbar --------------- */
+
+.box {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+.box::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
 }
 
 /* -------------------- Movie List ----------- */
@@ -94,7 +105,7 @@ input::placeholder {
 .movie-list {
     display: flex;
     flex-direction: column;
-    padding: 20px 30px;
+    padding: 0px 0px;
 
     /* border: 1px solid red; */
 }
@@ -115,8 +126,13 @@ input::placeholder {
     color: white;
     /* border: 1px solid red; */
 
-    border-bottom: 0.5px solid rgb(93, 93, 93);
-    padding: 15px 0px;
+    border-bottom: 0.5px solid rgb(67, 67, 67);
+    padding: 15px 15px;
+    cursor: pointer;
+}
+
+.movie:hover {
+    background-color: rgb(33, 33, 33);
 }
 
 .movie-list .title {
@@ -135,4 +151,94 @@ input::placeholder {
     flex-direction: column;
 
     gap: 5px;
+}
+
+
+/* ---------------- Movie Details -------------- */
+
+.movie-details {
+    
+}
+
+.movie-detail__head {
+    background-color: rgb(57, 57, 57);
+    min-height: 200px;
+
+    max-height: fit-content;
+    /* width: 150px; */
+    display: flex;
+    /* border: 1px solid red; */
+}
+ 
+.movie-detail__image {
+    width: 50%;
+    max-width: 150px;
+    height: 100%;
+    /* width: 100%; */
+}
+
+.movie-detail__right {
+    color: white;
+    flex-direction: column;
+    /* justify-content: center; */
+    padding: 15px;
+    gap: 10px;
+}
+
+.movie-detail__right span {
+    font-size: 0.8rem;
+    color: rgb(231, 231, 231);
+}
+
+
+/* --------------------- Responsive -------------------- */
+
+@media screen and (540px <= width <= 676px) {
+    .movie-detail__head {
+        flex-direction: column;
+    }
+    .movie-detail__image {
+        height: 180px;
+        width: 100%;
+        max-width: none;
+
+        object-fit: cover;
+        object-position: bottom;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .box:nth-of-type(1) {
+        margin-left: 8px;
+    }
+    .box:nth-of-type(2) {
+        margin-right: 8px;
+    }
+
+    nav {
+        margin-inline: 8px !important;
+    }
+}
+
+@media screen and (max-width: 540px) {
+    .container {
+        margin: 0;
+    }
+    .box-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .box {
+        width: 95%;
+        margin-inline: 0px !important;
+    }
+
+    .box:nth-of-type(2) {
+        margin-bottom: 8px;
+    }
+    nav {
+        /* border: 1px solid red; */
+        font-size: 0.75rem;
+        margin-block: 12px !important;
+    }
 }
