@@ -13,6 +13,9 @@ body {
 .flex {
     display: flex;
 }
+p {
+    color: rgb(224, 223, 223);
+}
 
 /* nav */
 
@@ -131,11 +134,15 @@ input::placeholder {
 }
 
 .movie:hover {
-    background-color: rgb(33, 33, 33);
+    background-color: rgb(28, 28, 28);
+}
+
+.movie.selected {
+    background-color: rgb(28, 28, 28);
 }
 
 .movie-list .title {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
 }
 
@@ -167,11 +174,7 @@ input::placeholder {
     /* border: 1px solid red; */
     position: relative;
 }
-
-.movie-detail__head .close {
-    position: absolute;
-    top: -1px;
-    left: -1px;
+.close {
     width: 30px;
     background-color: rgba(32, 32, 32, 0.886);
     color: white;
@@ -179,6 +182,12 @@ input::placeholder {
     border-radius: 20%;
     transition: 0.15s ease-in-out;
     cursor: pointer;
+}
+
+.movie-detail__head .close {
+    position: absolute;
+    top: -1px;
+    left: -1px;
 }
 .movie-detail__head .close:hover {
     background-color: rgb(32, 32, 32);
@@ -223,7 +232,32 @@ section {
     /* border: 1px solid red; */
     padding-top: 5px;
     padding-inline: 30px;
+    padding-bottom: 5px;
     border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.add-btn {
+    border: none;
+    outline: none;
+
+    font-size: 1.1rem;
+    padding: 0.25em 0.75em;
+    margin-bottom: 8px;
+
+    border-radius: 8px;
+
+    color: rgb(228, 228, 228);
+    background-color: rgb(81, 96, 165);
+
+    transition: 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+.add-btn:hover {
+    opacity: 0.6;
 }
 
 .movie_about {
@@ -240,9 +274,45 @@ section {
     font-style: italic;
 }
 
+/* ------------ watched movies ---------- */
+
+.watched-summary {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    padding: 18px;
+    box-shadow: 0 3px 13px rgba(0, 0, 0, 0.612);
+
+    border-radius: 10px;
+}
+
+.stats {
+    display: flex;
+    gap: 20px;
+}
+.watched-movie-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 20px;
+
+    border-bottom: 0.5px solid rgb(67, 67, 67);
+}
+
+.watched-movie {
+    pointer-events: none;
+    border: none;
+}
+
+.movie-close:hover {
+    background-color: black;
+}
+
 /* --------------------- Responsive -------------------- */
 
-@media screen and (540px <= width <= 676px) {
+/* @media screen and (540px <= width <= 676px) {
     .movie-detail__head {
         flex-direction: column;
     }
@@ -254,7 +324,7 @@ section {
         object-fit: cover;
         object-position: bottom;
     }
-}
+} */
 
 @media screen and (max-width: 1000px) {
     .box:nth-of-type(1) {
@@ -269,13 +339,14 @@ section {
     }
 }
 
-@media screen and (max-width: 540px) {
+@media screen and (max-width: 600px) {
     .container {
         margin: 0;
     }
     .box-container {
         flex-direction: column;
         align-items: center;
+        gap: 20px;
     }
     .box {
         width: 95%;
@@ -297,8 +368,15 @@ section {
         padding-inline: 15px;
         padding-top: 10px;
         padding-bottom: 8px;
+        gap: 10px;
     }
     .box {
         height: 500px;
+    }
+    .movie__detail .stats {
+        /* gap: 13px; */
+    }
+    .watched-movie {
+        gap: 16px;
     }
 }

@@ -4,6 +4,7 @@ import { StarRating } from "star-ratings-react";
 export default function App() {
     const [search, setSearch] = useState("inception");
     const [movies, setMovies] = useState([]);
+    const [watchedMovies, setWatchedMovies] = useState([]);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState(null);
@@ -14,6 +15,14 @@ export default function App() {
 
     function handleCloseMovie(id) {
         setSelected(null);
+    }
+
+    function handleAddWatchedWmovie(movie) {
+        setWatchedMovies((watched) => [...watched, movie]);
+    }
+
+    function handleDeleteMovie(id) {
+        setWatchedMovies((movies) => movies.filter((movie) => movie.id !== id));
     }
 
     useEffect(
@@ -35,6 +44,7 @@ export default function App() {
                         throw new Error("😫 Cannot find any movie !!!");
                     }
                     setMovies(data.Search);
+                    // setSelected("tt5295894");
                 } catch (e) {
                     setError(e.message);
                 } finally {
@@ -63,19 +73,95 @@ export default function App() {
                         <MovieList
                             movies={movies}
                             onSelectMovie={handleSelectMovie}
+                            selected={selected}
                         />
                     )}
                 </Box>
                 <Box>
-                    {selected && (
+                    {selected ? (
                         <MovieDetail
                             selected={selected}
                             onCloseMovie={handleCloseMovie}
+                            onAddWatchMovie={handleAddWatchedWmovie}
+                            watchedMovies={watchedMovies}
                         />
+                    ) : (
+                        <>
+                            <WatchedMoviesStats movies={watchedMovies} />
+                            <WatchedMoviesList
+                                movies={watchedMovies}
+                                onDeleteMovie={handleDeleteMovie}
+                            />
+                        </>
                     )}
                 </Box>
             </div>
         </>
+    );
+}
+
+function WatchedMoviesStats({ movies }) {
+    const totalMovie = movies.length;
+    const totalRuntime = movies.reduce(
+        (total, movie) => total + movie.runtime,
+        0
+    );
+
+    const avgRating =
+        movies.reduce((total, movie) => total + movie.rating, 0) / totalMovie;
+
+    const myAvgRating =
+        movies.reduce((total, movie) => total + movie.myRating, 0) / totalMovie;
+
+    return (
+        <div className="watched-summary">
+            <h3>MOVIES YOU WATCHED</h3>
+            <div className="stats">
+                <span>🎬 {totalMovie || 0}</span>
+                <span>⭐ {avgRating.toFixed(1) || 0}</span>
+                <span>🌟 {myAvgRating.toFixed(1) || 0}</span>
+                <span>⏳ {totalRuntime} min</span>
+            </div>
+        </div>
+    );
+}
+
+function WatchedMoviesList({ movies, onDeleteMovie }) {
+    return (
+        <div className="movie-list">
+            {movies.map((movie) => (
+                <WatchedMovie
+                    movie={movie}
+                    key={movie.id}
+                    onDeleteMovie={onDeleteMovie}
+                />
+            ))}
+        </div>
+    );
+}
+
+function WatchedMovie({ movie, onDeleteMovie }) {
+    const { title, rating, poster, myRating, runtime } = movie;
+    return (
+        <div className="watched-movie-container">
+            <div className="watched-movie movie">
+                <img src={`${poster}`} alt="movie" className="movie__image" />
+                <div className="movie__detail">
+                    <div className="title">{title}</div>
+                    <div className="flex stats">
+                        <span>⭐ {rating || 0}</span>
+                        <span>🌟 {myRating || 0}</span>
+                        <span>⏳ {runtime} min</span>
+                    </div>
+                </div>
+            </div>
+            <img
+                src="/assets/close.svg"
+                alt="close"
+                className="close movie-close"
+                onClick={() => onDeleteMovie(movie.id)}
+            />
+        </div>
     );
 }
 
@@ -105,7 +191,7 @@ function Box({ children }) {
     return <div className="box">{children}</div>;
 }
 
-function MovieList({ movies, onSelectMovie }) {
+function MovieList({ movies, onSelectMovie, selected }) {
     return (
         <div className="movie-list">
             {movies.map((movie) => (
@@ -113,16 +199,20 @@ function MovieList({ movies, onSelectMovie }) {
                     movie={movie}
                     key={movie.imdbID}
                     onSelectMovie={onSelectMovie}
+                    selected={selected}
                 />
             ))}
         </div>
     );
 }
 
-function Movie({ movie, onSelectMovie }) {
+function Movie({ movie, onSelectMovie, selected }) {
     const { Title, Year, Poster } = movie;
     return (
-        <div className="movie" onClick={() => onSelectMovie(movie.imdbID)}>
+        <div
+            className={`movie ${selected === movie.imdbID ? "selected" : ""}`}
+            onClick={() => onSelectMovie(movie.imdbID)}
+        >
             <img src={`${Poster}`} alt="movie" className="movie__image" />
             <div className="movie__detail">
                 <div className="title">{Title}</div>
@@ -132,10 +222,16 @@ function Movie({ movie, onSelectMovie }) {
     );
 }
 
-function MovieDetail({ selected, onCloseMovie }) {
+function MovieDetail({
+    selected,
+    onCloseMovie,
+    onAddWatchMovie,
+    watchedMovies,
+}) {
     const [movie, setMovie] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [myRating, setMyRating] = useState(0);
 
     const {
         Title: title,
@@ -149,7 +245,23 @@ function MovieDetail({ selected, onCloseMovie }) {
         Director: director,
     } = movie;
 
-    console.log("movie = ", movie);
+    const isWatched = watchedMovies.map((m) => m.id).includes(selected);
+    const watchedUserRating = watchedMovies.find(
+        (movie) => movie.id === selected
+    )?.myRating;
+
+    console.log("isWatched");
+    function addToWatchedList() {
+        onAddWatchMovie({
+            id: selected,
+            runtime: Number(runtime.split(" ")[0]),
+            rating: Number(rating),
+            myRating,
+            poster,
+            title,
+        });
+        onCloseMovie();
+    }
 
     useEffect(
         function () {
@@ -208,7 +320,28 @@ function MovieDetail({ selected, onCloseMovie }) {
 
                     <section>
                         <div className="star-cont">
-                            <StarRating size={25} />
+                            {!isWatched ? (
+                                <>
+                                    <StarRating
+                                        size={25}
+                                        rating={myRating}
+                                        textColor="white"
+                                        onSetRating={setMyRating}
+                                    />
+                                    {myRating > 0 && (
+                                        <button
+                                            className="add-btn"
+                                            onClick={addToWatchedList}
+                                        >
+                                            Add to watch list +
+                                        </button>
+                                    )}
+                                </>
+                            ) : (
+                                <p>
+                                    You rated this movie {watchedUserRating} 🌟
+                                </p>
+                            )}
                         </div>
                         <div className="movie_about">
                             <div className="plot">{plot}</div>
