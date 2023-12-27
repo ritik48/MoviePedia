@@ -110,6 +110,7 @@ export default function App() {
                     )}
                 </Box>
             </div>
+            <Footer />
         </>
     );
 }
@@ -376,6 +377,23 @@ function MovieDetail({
                     </section>
                 </>
             )}
+        </div>
+    );
+}
+
+function Footer() {
+    const style = {
+        color: "rgb(224, 224, 224)",
+        textAlign: "center",
+        backgroundColor: "rgb(40, 40, 40)",
+        textDecoration: "none",
+    };
+    return (
+        <div style={style} className="footer">
+            Made with ❤️ by{" "}
+            <a href="https://github.com/ritik48" target="blank_">
+                Ritik
+            </a>
         </div>
     );
 }

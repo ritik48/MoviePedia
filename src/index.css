@@ -89,6 +89,7 @@ input::placeholder {
     border-radius: 6px;
     /* border: 1px solid rgb(195, 182, 182); */
     background-color: rgb(40, 40, 40);
+    /* background-color: rgb(225, 224, 224); */
     overflow: scroll;
 }
 
@@ -308,6 +309,20 @@ section {
 
 .movie-close:hover {
     background-color: black;
+}
+
+/* ------------- footer --------- */
+
+.footer {
+    padding: 2px;
+}
+a {
+    color: rgb(189, 189, 189) !important;
+    transition: 0.15s ease-in-out;
+}
+
+a:hover {
+    color: white !important;
 }
 
 /* --------------------- Responsive -------------------- */
