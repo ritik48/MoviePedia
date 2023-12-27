@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { StarRating } from "star-ratings-react";
 
 export default function App() {
     const [search, setSearch] = useState("inception");
@@ -9,6 +10,10 @@ export default function App() {
 
     function handleSelectMovie(id) {
         setSelected((selected) => (id !== selected ? id : null));
+    }
+
+    function handleCloseMovie(id) {
+        setSelected(null);
     }
 
     useEffect(
@@ -61,7 +66,14 @@ export default function App() {
                         />
                     )}
                 </Box>
-                <Box>{selected && <MovieDetail selected={selected} />}</Box>
+                <Box>
+                    {selected && (
+                        <MovieDetail
+                            selected={selected}
+                            onCloseMovie={handleCloseMovie}
+                        />
+                    )}
+                </Box>
             </div>
         </>
     );
@@ -74,7 +86,9 @@ function Loader() {
 function Nav({ onChange, movies, search }) {
     return (
         <nav className="nav flex container">
-            <div className="nav__left brand">🍿 <span className="brand">moviePedia</span></div>
+            <div className="nav__left brand">
+                🍿 <span className="brand">moviePedia</span>
+            </div>
             <div className="nav__center">
                 <input
                     value={search}
@@ -118,7 +132,7 @@ function Movie({ movie, onSelectMovie }) {
     );
 }
 
-function MovieDetail({ selected }) {
+function MovieDetail({ selected, onCloseMovie }) {
     const [movie, setMovie] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -130,6 +144,9 @@ function MovieDetail({ selected }) {
         Genre: genre,
         imdbRating: rating,
         Poster: poster,
+        Plot: plot,
+        Actors: actors,
+        Director: director,
     } = movie;
 
     console.log("movie = ", movie);
@@ -166,21 +183,40 @@ function MovieDetail({ selected }) {
             {loading ? (
                 <Loader />
             ) : (
-                <div className="movie-detail__head flex">
-                    <img
-                        src={`${poster}`}
-                        className="movie-detail__image"
-                        alt="movie"
-                    />
-                    <div className="movie-detail__right flex">
-                        <h2>{title}</h2>
-                        <span>
-                            {released} &#183; {runtime}
-                        </span>
-                        <span>{genre}</span>
-                        <span>⭐ {rating} IMDb rating </span>
+                <>
+                    <div className="movie-detail__head flex">
+                        <img
+                            src={`${poster}`}
+                            className="movie-detail__image"
+                            alt="movie"
+                        />
+                        <div className="movie-detail__right flex">
+                            <h2>{title}</h2>
+                            <span>
+                                {released} &#183; {runtime}
+                            </span>
+                            <span>{genre}</span>
+                            <span>⭐ {rating} IMDb rating </span>
+                        </div>
+                        <img
+                            src="/assets/close.svg"
+                            alt="close"
+                            className="close"
+                            onClick={onCloseMovie}
+                        />
                     </div>
-                </div>
+
+                    <section>
+                        <div className="star-cont">
+                            <StarRating size={25} />
+                        </div>
+                        <div className="movie_about">
+                            <div className="plot">{plot}</div>
+                            <div className="actors">Starring {actors}</div>
+                            <div>Directed by {director}</div>
+                        </div>
+                    </section>
+                </>
             )}
         </div>
     );
