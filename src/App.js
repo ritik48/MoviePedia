@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { StarRating } from "star-ratings-react";
 
 export default function App() {
-    const [search, setSearch] = useState("inception");
+    const [search, setSearch] = useState("");
     const [movies, setMovies] = useState([]);
     const [watchedMovies, setWatchedMovies] = useState([]);
     const [error, setError] = useState("");
@@ -27,12 +27,14 @@ export default function App() {
 
     useEffect(
         function () {
+            const controller = new AbortController();
             async function fetchMovies() {
                 setError("");
                 setLoading(true);
                 try {
                     const res = await fetch(
-                        "https://omdbapi.com/?apikey=34d0a473&s=" + search
+                        "https://omdbapi.com/?apikey=34d0a473&s=" + search,
+                        { signal: controller.signal }
                     );
                     if (!res.ok) {
                         throw new Error("😐 Something went wrong");
@@ -40,13 +42,14 @@ export default function App() {
                     const data = await res.json();
 
                     if (data.Response !== "True") {
-                        setSelected(null);
                         throw new Error("😫 Cannot find any movie !!!");
                     }
                     setMovies(data.Search);
-                    // setSelected("tt5295894");
-                } catch (e) {
-                    setError(e.message);
+                    setError("");
+                } catch (err) {
+                    if (err.name !== "AbortError") {
+                        setError(err.message);
+                    }
                 } finally {
                     setLoading(false);
                 }
@@ -57,7 +60,14 @@ export default function App() {
                 setSelected(null);
                 return;
             }
+            setSelected(null);
+            setMovies([]);
             fetchMovies();
+
+            // cleanup function to stop the request when the component re-renders so that a lot of request is not fired at once
+            return function () {
+                controller.abort();
+            };
         },
         [search]
     );
@@ -69,6 +79,9 @@ export default function App() {
                 <Box>
                     {loading && <Loader />}
                     {error && <div className="error">{error}</div>}
+                    {!loading && !error && !movies.length && (
+                        <p className="error">Search something 🤔</p>
+                    )}
                     {!loading && !error && (
                         <MovieList
                             movies={movies}
@@ -84,6 +97,7 @@ export default function App() {
                             onCloseMovie={handleCloseMovie}
                             onAddWatchMovie={handleAddWatchedWmovie}
                             watchedMovies={watchedMovies}
+                            key={selected + "9874"}
                         />
                     ) : (
                         <>
@@ -250,7 +264,6 @@ function MovieDetail({
         (movie) => movie.id === selected
     )?.myRating;
 
-    console.log("isWatched");
     function addToWatchedList() {
         onAddWatchMovie({
             id: selected,
@@ -282,7 +295,6 @@ function MovieDetail({
                     setError(e.message);
                 } finally {
                     setLoading(false);
-                    setError("");
                 }
             }
             fetchMovieDetails();
@@ -290,11 +302,24 @@ function MovieDetail({
         [selected]
     );
 
+    // setting the title of the page to the selected movie
+    useEffect(
+        function () {
+            if (!title) return;
+            document.title = `Movie | ${title}`;
+
+            return function () {
+                document.title = "MoviePedia";
+            };
+        },
+        [title]
+    );
+
     return (
         <div className="movie-detail">
-            {loading ? (
-                <Loader />
-            ) : (
+            {error && <div className="error">😐 {error}</div>}
+            {loading && <Loader />}
+            {!loading && !error && (
                 <>
                     <div className="movie-detail__head flex">
                         <img
