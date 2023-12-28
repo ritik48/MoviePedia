@@ -133,8 +133,8 @@ function WatchedMoviesStats({ movies }) {
             <h3>MOVIES YOU WATCHED</h3>
             <div className="stats">
                 <span>🎬 {totalMovie || 0}</span>
-                <span>⭐ {avgRating.toFixed(1) || 0}</span>
-                <span>🌟 {myAvgRating.toFixed(1) || 0}</span>
+                <span>⭐ {avgRating ? avgRating.toFixed(1) : 0}</span>
+                <span>🌟 {myAvgRating ? myAvgRating.toFixed(1) : 0}</span>
                 <span>⏳ {totalRuntime} min</span>
             </div>
         </div>
