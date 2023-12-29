@@ -11,7 +11,8 @@ export default function App() {
 
     // get the watched movies stored in the localstorage
     const [watchedMovies, setWatchedMovies] = useState(function () {
-        return JSON.parse(localStorage.getItem("watched"));
+        const storedValue = localStorage.getItem("watched");
+        return storedValue ? JSON.parse(storedValue) : [];
     });
 
     function handleSelectMovie(id) {
