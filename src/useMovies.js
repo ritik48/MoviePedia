@@ -37,6 +37,7 @@ export function useMovies(search, callback) {
             if (search.length < 3) {
                 setMovies([]);
                 setError("");
+                callback(null);
                 return;
             }
 

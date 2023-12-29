@@ -1,19 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { StarRating } from "star-ratings-react";
 import { useMovies } from "./useMovies";
+import { useLocalStorage } from "./useLocalStorage";
+import { useKeyPress } from "./useKeyPress";
 
 export default function App() {
     const [search, setSearch] = useState("");
-    
     const [selected, setSelected] = useState(null);
 
     // get the watched movies stored in the localstorage
-    const [watchedMovies, setWatchedMovies] = useState(function () {
-        const storedValue = localStorage.getItem("watched");
-        return storedValue ? JSON.parse(storedValue) : [];
-    });
-
-    const {movies, error, loading } = useMovies(search, setSelected);
+    const { movies, error, loading } = useMovies(search, setSelected);
+    const [watchedMovies, setWatchedMovies] = useLocalStorage("watched", []);
 
     function handleSelectMovie(id) {
         setSelected((selected) => (id !== selected ? id : null));
@@ -34,13 +31,6 @@ export default function App() {
     // store watched movies in local storage
     // we have used useEffect, as watched movies wil be inserted and deleted automatically
     // as it is in sync with watchedMovie (dependency array)
-    useEffect(
-        function () {
-            localStorage.setItem("watched", JSON.stringify(watchedMovies));
-        },
-        [watchedMovies]
-    );
-
 
     return (
         <>
@@ -158,23 +148,11 @@ function Nav({ setSearch, movies, search }) {
     const searchElement = useRef(null);
 
     // focus search input when enter is pressed
-    useEffect(
-        function () {
-            function callback(e) {
-                if (e.key === "Enter") {
-                    if (document.activeElement === searchElement.current)
-                        return;
-                    console.log(e.key);
-                    searchElement.current.focus();
-                    setSearch("");
-                }
-            }
-
-            document.addEventListener("keydown", callback);
-            return () => document.removeEventListener("keydown", callback);
-        },
-        [setSearch]
-    );
+    useKeyPress("enter", function () {
+        if (document.activeElement === searchElement.current) return;
+        searchElement.current.focus();
+        setSearch("");
+    });
 
     return (
         <nav className="nav flex container">
@@ -270,22 +248,7 @@ function MovieDetail({
     }
 
     // close the movie details when esc is pressed
-    useEffect(
-        function () {
-            function callback(e) {
-                if (e.key === "Escape") {
-                    console.log(e.key);
-                    onCloseMovie();
-                }
-            }
-            document.addEventListener("keydown", callback);
-
-            return function () {
-                document.removeEventListener("keydown", callback);
-            };
-        },
-        [onCloseMovie]
-    );
+    useKeyPress("escape", onCloseMovie);
 
     useEffect(
         function () {
