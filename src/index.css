@@ -60,6 +60,12 @@ input {
     background-color: rgb(116, 135, 220);
     color: white;
     width: 100%;
+
+    transition: 0.10s ease-in-out;
+}
+
+input:focus {
+    transform: translateY(-2px);
 }
 
 input::placeholder {
