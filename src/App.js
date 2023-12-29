@@ -3,11 +3,16 @@ import { StarRating } from "star-ratings-react";
 
 export default function App() {
     const [search, setSearch] = useState("");
+
     const [movies, setMovies] = useState([]);
-    const [watchedMovies, setWatchedMovies] = useState([]);
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const [selected, setSelected] = useState(null);
+
+    // get the watched movies stored in the localstorage
+    const [watchedMovies, setWatchedMovies] = useState(function () {
+        return JSON.parse(localStorage.getItem("watched"));
+    });
 
     function handleSelectMovie(id) {
         setSelected((selected) => (id !== selected ? id : null));
@@ -24,6 +29,16 @@ export default function App() {
     function handleDeleteMovie(id) {
         setWatchedMovies((movies) => movies.filter((movie) => movie.id !== id));
     }
+
+    // store watched movies in local storage
+    // we have used useEffect, as watched movies wil be inserted and deleted automatically
+    // as it is in sync with watchedMovie (dependency array)
+    useEffect(
+        function () {
+            localStorage.setItem("watched", JSON.stringify(watchedMovies));
+        },
+        [watchedMovies]
+    );
 
     useEffect(
         function () {
