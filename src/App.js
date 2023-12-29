@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StarRating } from "star-ratings-react";
 
 export default function App() {
@@ -74,7 +74,7 @@ export default function App() {
 
     return (
         <>
-            <Nav onChange={setSearch} search={search} movies={movies} />
+            <Nav setSearch={setSearch} search={search} movies={movies} />
             <div className="container box-container">
                 <Box>
                     {loading && <Loader />}
@@ -184,7 +184,28 @@ function Loader() {
     return <div className="loading">Loading...</div>;
 }
 
-function Nav({ onChange, movies, search }) {
+function Nav({ setSearch, movies, search }) {
+    const searchElement = useRef(null);
+
+    // focus search input when enter is pressed
+    useEffect(
+        function () {
+            function callback(e) {
+                if (e.key === "Enter") {
+                    if (document.activeElement === searchElement.current)
+                        return;
+                    console.log(e.key);
+                    searchElement.current.focus();
+                    setSearch("");
+                }
+            }
+
+            document.addEventListener("keydown", callback);
+            return () => document.removeEventListener("keydown", callback);
+        },
+        [setSearch]
+    );
+
     return (
         <nav className="nav flex container">
             <div className="nav__left brand">
@@ -194,7 +215,8 @@ function Nav({ onChange, movies, search }) {
                 <input
                     value={search}
                     placeholder="Search movie"
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e) => setSearch(e.target.value)}
+                    ref={searchElement}
                 />
             </div>
             <div className="nav__right">Found {movies.length} results</div>
