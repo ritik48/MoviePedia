@@ -277,6 +277,24 @@ function MovieDetail({
         onCloseMovie();
     }
 
+    // close the movie details when esc is pressed
+    useEffect(
+        function () {
+            function callback(e) {
+                if (e.key === "Escape") {
+                    console.log(e.key);
+                    onCloseMovie();
+                }
+            }
+            document.addEventListener("keydown", callback);
+
+            return function () {
+                document.removeEventListener("keydown", callback);
+            };
+        },
+        [onCloseMovie]
+    );
+
     useEffect(
         function () {
             async function fetchMovieDetails() {
