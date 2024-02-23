@@ -5,7 +5,7 @@ import { useLocalStorage } from "./useLocalStorage";
 import { useKeyPress } from "./useKeyPress";
 
 export default function App() {
-    const [search, setSearch] = useState("Avenger");
+    const [search, setSearch] = useState("Avengers");
     const [selected, setSelected] = useState("tt0848228");
 
     // get the watched movies stored in the localstorage
